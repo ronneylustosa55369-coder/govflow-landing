@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GovFlow — Governança Municipal Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul: #0A2540;
+    --azul-medio: #1A3F6F;
+    --ciano: #00C2FF;
+    --verde: #00E5A0;
+    --cinza-claro: #F4F7FB;
+    --cinza-texto: #64748B;
+    --branco: #FFFFFF;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--azul);
+    color: var(--branco);
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: rgba(10,37,64,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,194,255,0.12);
+  }
+  .nav-logo {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px;
+    color: var(--branco);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .nav-logo span { color: var(--ciano); }
+  .nav-cta {
+    background: var(--ciano); color: var(--azul);
+    font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+    padding: 0.6rem 1.6rem; border-radius: 6px;
+    text-decoration: none; font-size: 0.9rem;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .nav-cta:hover { background: var(--verde); transform: translateY(-1px); }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 8rem 4rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; top: -200px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(0,194,255,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -100px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,229,160,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(0,194,255,0.1); border: 1px solid rgba(0,194,255,0.3);
+    color: var(--ciano); font-size: 0.8rem; font-weight: 500;
+    padding: 0.4rem 1rem; border-radius: 100px;
+    margin-bottom: 1.8rem; width: fit-content;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-badge::before { content: '●'; font-size: 0.5rem; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .hero h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 5.2rem);
+    font-weight: 800; line-height: 1.05;
+    letter-spacing: -2px; max-width: 780px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+  .hero h1 em { font-style: normal; color: var(--ciano); }
+
+  .hero-sub {
+    font-size: 1.15rem; color: rgba(255,255,255,0.65);
+    max-width: 520px; line-height: 1.7; margin-top: 1.4rem;
+    font-weight: 300;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-actions {
+    display: flex; gap: 1rem; margin-top: 2.4rem; flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+  .btn-primary {
+    background: var(--ciano); color: var(--azul);
+    font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+    padding: 0.9rem 2.2rem; border-radius: 8px;
+    text-decoration: none; font-size: 1rem;
+    transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-primary:hover { background: var(--verde); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,229,160,0.3); }
+  .btn-secondary {
+    border: 1px solid rgba(255,255,255,0.2); color: var(--branco);
+    padding: 0.9rem 2.2rem; border-radius: 8px;
+    text-decoration: none; font-size: 1rem;
+    transition: all 0.2s; font-family: 'DM Sans', sans-serif;
+  }
+  .btn-secondary:hover { border-color: var(--ciano); color: var(--ciano); }
+
+  .hero-stats {
+    display: flex; gap: 3rem; margin-top: 4rem; flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.4s ease both;
+    padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .stat-item { display: flex; flex-direction: column; gap: 0.2rem; }
+  .stat-num {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 2rem; font-weight: 800;
+    color: var(--ciano);
+  }
+  .stat-label { font-size: 0.8rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.5px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── SEÇÃO GENÉRICA ─── */
+  section { padding: 6rem 4rem; }
+  .section-label {
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--ciano);
+    margin-bottom: 0.8rem;
+  }
+  .section-title {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: 800; line-height: 1.15; letter-spacing: -1px;
+    max-width: 600px;
+  }
+  .section-sub {
+    color: rgba(255,255,255,0.55); font-size: 1rem; line-height: 1.7;
+    max-width: 520px; margin-top: 0.8rem; font-weight: 300;
+  }
+
+  /* ─── PROBLEMA ─── */
+  .problema { background: var(--azul); }
+  .problema-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+    margin-top: 3rem; max-width: 900px;
+  }
+  .problema-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 12px; padding: 1.6rem;
+    display: flex; align-items: flex-start; gap: 1rem;
+    transition: border-color 0.2s;
+  }
+  .problema-card:hover { border-color: rgba(0,194,255,0.2); }
+  .problema-icon { font-size: 1.6rem; flex-shrink: 0; }
+  .problema-text h4 {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.95rem;
+    font-weight: 700; margin-bottom: 0.3rem;
+  }
+  .problema-text p { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.5; }
+
+  /* ─── MÓDULOS ─── */
+  .modulos { background: #071d33; }
+  .modulos-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.2rem; margin-top: 3rem;
+  }
+  .modulo-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 14px; padding: 1.8rem;
+    transition: all 0.25s; position: relative; overflow: hidden;
+  }
+  .modulo-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--ciano), var(--verde));
+    opacity: 0; transition: opacity 0.25s;
+  }
+  .modulo-card:hover { transform: translateY(-4px); border-color: rgba(0,194,255,0.2); }
+  .modulo-card:hover::before { opacity: 1; }
+  .modulo-num {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.7rem; font-weight: 700;
+    color: var(--ciano); letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+  .modulo-icon { font-size: 2rem; margin-bottom: 0.8rem; display: block; }
+  .modulo-card h3 {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.05rem;
+    font-weight: 700; margin-bottom: 0.5rem;
+  }
+  .modulo-card p { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.6; }
+
+  /* ─── DIFERENCIAL ─── */
+  .diferencial { background: var(--azul); }
+  .dif-lista {
+    display: flex; flex-direction: column; gap: 1rem;
+    margin-top: 2.5rem; max-width: 640px;
+  }
+  .dif-item {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1.2rem 1.4rem;
+    background: rgba(0,194,255,0.04);
+    border: 1px solid rgba(0,194,255,0.1);
+    border-radius: 10px;
+  }
+  .dif-check {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(0,229,160,0.15); border: 1px solid var(--verde);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; color: var(--verde); flex-shrink: 0; margin-top: 2px;
+  }
+  .dif-item p { font-size: 0.95rem; line-height: 1.6; color: rgba(255,255,255,0.8); }
+  .dif-item strong { color: var(--branco); }
+
+  /* ─── TRANSIÇÃO DE GESTÃO ─── */
+  .transicao {
+    background: linear-gradient(135deg, #071d33 0%, #0d2d4a 100%);
+    border-top: 1px solid rgba(0,194,255,0.1);
+    border-bottom: 1px solid rgba(0,194,255,0.1);
+  }
+  .transicao-inner {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+    align-items: center;
+  }
+  .transicao-visual {
+    background: rgba(0,194,255,0.05);
+    border: 1px solid rgba(0,194,255,0.15);
+    border-radius: 16px; padding: 2rem;
+  }
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-item {
+    display: flex; gap: 1rem; align-items: flex-start;
+    padding-bottom: 1.4rem; position: relative;
+  }
+  .tl-item:not(:last-child)::after {
+    content: ''; position: absolute;
+    left: 14px; top: 28px; bottom: 0; width: 1px;
+    background: rgba(0,194,255,0.2);
+  }
+  .tl-dot {
+    width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 700; font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+  .tl-dot.ativo { background: rgba(0,229,160,0.2); border: 1px solid var(--verde); color: var(--verde); }
+  .tl-dot.neutro { background: rgba(0,194,255,0.15); border: 1px solid var(--ciano); color: var(--ciano); }
+  .tl-dot.alerta { background: rgba(255,160,0,0.15); border: 1px solid #FFA500; color: #FFA500; }
+  .tl-content h4 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.9rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .tl-content p { font-size: 0.8rem; color: rgba(255,255,255,0.5); line-height: 1.4; }
+
+  /* ─── PREÇOS ─── */
+  .precos { background: #071d33; }
+  .precos-header { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 3rem; }
+  .teto-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.3);
+    color: var(--verde); font-size: 0.8rem; padding: 0.4rem 1rem;
+    border-radius: 100px; width: fit-content; margin-top: 0.8rem;
+  }
+  .faixas-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .faixa-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px; padding: 1.6rem;
+    transition: all 0.25s; text-align: center;
+  }
+  .faixa-card:hover { border-color: rgba(0,194,255,0.3); transform: translateY(-3px); }
+  .faixa-card.destaque {
+    background: rgba(0,194,255,0.07);
+    border-color: rgba(0,194,255,0.35);
+  }
+  .faixa-label {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--ciano); margin-bottom: 0.3rem;
+  }
+  .faixa-fpm {
+    font-size: 0.78rem; color: rgba(255,255,255,0.4); margin-bottom: 1.2rem;
+  }
+  .faixa-preco {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: 1.8rem; font-weight: 800;
+    color: var(--branco); line-height: 1;
+  }
+  .faixa-preco span { font-size: 1rem; font-weight: 400; color: rgba(255,255,255,0.5); }
+  .faixa-impl {
+    font-size: 0.8rem; color: rgba(255,255,255,0.4);
+    margin-top: 0.5rem; padding-top: 0.8rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .faixa-impl strong { color: rgba(255,255,255,0.7); }
+  .precos-nota {
+    margin-top: 1.5rem; font-size: 0.82rem; color: rgba(255,255,255,0.35);
+    text-align: center; line-height: 1.6;
+  }
+
+  /* ─── CTA FINAL ─── */
+  .cta-final {
+    background: linear-gradient(135deg, #0A2540, #1A3F6F);
+    text-align: center; padding: 7rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .cta-final::before {
+    content: ''; position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,194,255,0.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .cta-final h2 {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 800; letter-spacing: -1.5px; margin-bottom: 1rem;
+    position: relative;
+  }
+  .cta-final p {
+    color: rgba(255,255,255,0.55); font-size: 1.05rem; margin-bottom: 2.5rem;
+    max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.7;
+    position: relative;
+  }
+  .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; }
+  .btn-whatsapp {
+    background: #25D366; color: #fff;
+    font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700;
+    padding: 1rem 2.4rem; border-radius: 8px;
+    text-decoration: none; font-size: 1rem;
+    display: flex; align-items: center; gap: 0.6rem;
+    transition: all 0.2s;
+  }
+  .btn-whatsapp:hover { background: #20bd5a; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,211,102,0.3); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #050f1a;
+    padding: 2.5rem 4rem;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .footer-logo {
+    font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800;
+    font-size: 1.1rem; color: rgba(255,255,255,0.6);
+  }
+  .footer-logo span { color: var(--ciano); }
+  .footer-text { font-size: 0.8rem; color: rgba(255,255,255,0.25); }
+  .footer-by { font-size: 0.78rem; color: rgba(255,255,255,0.2); text-align: right; }
+  .footer-by strong { color: rgba(255,255,255,0.4); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    section { padding: 4rem 1.5rem; }
+    .hero { padding: 7rem 1.5rem 3rem; }
+    .hero-stats { gap: 1.5rem; }
+    .problema-grid { grid-template-columns: 1fr; }
+    .transicao-inner { grid-template-columns: 1fr; }
+    .faixas-grid { grid-template-columns: repeat(2, 1fr); }
+    footer { padding: 2rem 1.5rem; flex-direction: column; text-align: center; }
+    .footer-by { text-align: center; }
+    .cta-final { padding: 5rem 1.5rem; }
+  }
+  @media (max-width: 480px) {
+    .faixas-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Gov<span>Flow</span></div>
+  <a href="#contato" class="nav-cta">Solicitar demonstração</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">Governança municipal digital</div>
+  <h1>Gestão pública<br>que <em>funciona</em><br>no celular.</h1>
+  <p class="hero-sub">GovFlow é o sistema de governança municipal que conecta prefeito, secretários e equipes em tempo real — demandas, documentos, agenda e relatórios em um só lugar.</p>
+  <div class="hero-actions">
+    <a href="#contato" class="btn-primary">Ver demonstração →</a>
+    <a href="#modulos" class="btn-secondary">Conheça os módulos</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <span class="stat-num">100%</span>
+      <span class="stat-label">Via navegador, sem instalar</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">R$40/mês</span>
+      <span class="stat-label">Faixa de entrada</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">≤ R$65k</span>
+      <span class="stat-label">Teto dispensa de licitação</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">2h</span>
+      <span class="stat-label">Para implantar</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section class="problema">
+  <div class="section-label">O desafio</div>
+  <h2 class="section-title">Prefeituras pequenas gerenciam muito com poucos recursos.</h2>
+  <p class="section-sub">Planilhas, grupos de WhatsApp e papéis empilhados não são gestão. São riscos.</p>
+  <div class="problema-grid">
+    <div class="problema-card">
+      <span class="problema-icon">📋</span>
+      <div class="problema-text">
+        <h4>Demandas sem rastreio</h4>
+        <p>Pedidos da população se perdem entre mensagens e ligações, sem registro e sem responsável.</p>
+      </div>
+    </div>
+    <div class="problema-card">
+      <span class="problema-icon">📁</span>
+      <div class="problema-text">
+        <h4>Documentos fora de controle</h4>
+        <p>Expedientes físicos, sem OCR e sem assinatura eletrônica, atrasam processos e geram retrabalho.</p>
+      </div>
+    </div>
+    <div class="problema-card">
+      <span class="problema-icon">📊</span>
+      <div class="problema-text">
+        <h4>Prefeito sem visibilidade</h4>
+        <p>Sem painel em tempo real, o gestor depende de reuniões para saber o que está acontecendo.</p>
+      </div>
+    </div>
+    <div class="problema-card">
+      <span class="problema-icon">🔄</span>
+      <div class="problema-text">
+        <h4>Transição de gestão traumática</h4>
+        <p>Troca de mandato sem protocolo gera perda de dados, processos incompletos e passivos ocultos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MÓDULOS -->
+<section class="modulos" id="modulos">
+  <div class="section-label">O sistema</div>
+  <h2 class="section-title">Tudo que a prefeitura precisa, integrado.</h2>
+  <p class="section-sub">Seis módulos funcionando juntos, acessíveis pelo celular ou computador, sem instalar nada.</p>
+  <div class="modulos-grid">
+    <div class="modulo-card">
+      <span class="modulo-num">Módulo 01</span>
+      <span class="modulo-icon">📍</span>
+      <h3>Demandas com GPS e Voz</h3>
+      <p>Registro de demandas com localização automática, foto e áudio. Fluxo SEI integrado com status em tempo real.</p>
+    </div>
+    <div class="modulo-card">
+      <span class="modulo-num">Módulo 02</span>
+      <span class="modulo-icon">📄</span>
+      <h3>Documentos e OCR</h3>
+      <p>Upload de documentos com reconhecimento de texto, assinatura eletrônica na tela e painel de expedientes.</p>
+    </div>
+    <div class="modulo-card">
+      <span class="modulo-num">Módulo 03</span>
+      <span class="modulo-icon">📅</span>
+      <h3>Agenda e Alertas</h3>
+      <p>Agenda do prefeito e secretários com alertas automáticos de prazo. Nunca mais perder um compromisso legal.</p>
+    </div>
+    <div class="modulo-card">
+      <span class="modulo-num">Módulo 04</span>
+      <span class="modulo-icon">💬</span>
+      <h3>Mensagens Diretas</h3>
+      <p>Comunicação interna entre equipes com histórico registrado. Sem depender de WhatsApp pessoal.</p>
+    </div>
+    <div class="modulo-card">
+      <span class="modulo-num">Módulo 05</span>
+      <span class="modulo-icon">📈</span>
+      <h3>Relatórios e Dashboard</h3>
+      <p>Painel em tempo real com semáforo de eficiência por secretaria. Relatórios PDF automáticos mensais.</p>
+    </div>
+    <div class="modulo-card">
+      <span class="modulo-num">Módulo 06</span>
+      <span class="modulo-icon">🔐</span>
+      <h3>Transição de Gestão</h3>
+      <p>Protocolo automático de fim de mandato: relatório final, pacote de dados e selamento seguro do histórico.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DIFERENCIAL -->
+<section class="diferencial">
+  <div class="section-label">Por que GovFlow</div>
+  <h2 class="section-title">Feito para a realidade dos municípios brasileiros.</h2>
+  <p class="section-sub">Não é uma adaptação de sistema corporativo. É um produto construído para a gestão pública municipal do Brasil.</p>
+  <div class="dif-lista">
+    <div class="dif-item">
+      <div class="dif-check">✓</div>
+      <p><strong>Contratação por dispensa de licitação</strong> — todos os planos ficam abaixo do teto legal de R$65.492,11, sem necessidade de processo licitatório.</p>
+    </div>
+    <div class="dif-item">
+      <div class="dif-check">✓</div>
+      <p><strong>Usuários ilimitados incluídos</strong> — preço por prefeitura (CNPJ), não por usuário. Toda a equipe acessa sem custo adicional.</p>
+    </div>
+    <div class="dif-item">
+      <div class="dif-check">✓</div>
+      <p><strong>Implantação em 2 horas</strong> — configuração remota com treinamento incluído. A prefeitura opera no mesmo dia da assinatura.</p>
+    </div>
+    <div class="dif-item">
+      <div class="dif-check">✓</div>
+      <p><strong>Sem Play Store, sem App Store</strong> — funciona direto no navegador do celular como PWA. Servidor autorizado recebe link e já usa.</p>
+    </div>
+    <div class="dif-item">
+      <div class="dif-check">✓</div>
+      <p><strong>Suporte contínuo incluído</strong> — WhatsApp direto com a equipe técnica. Sem fila de chamados.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TRANSIÇÃO DE GESTÃO -->
+<section class="transicao">
+  <div class="section-label">Módulo exclusivo</div>
+  <div class="transicao-inner">
+    <div>
+      <h2 class="section-title">Transição de gestão sem trauma.</h2>
+      <p class="section-sub" style="margin-top:1rem;">O GovFlow monitora automaticamente o calendário eleitoral e ativa o protocolo de transição no momento certo — sem depender da iniciativa de quem está saindo.</p>
+      <div class="dif-lista" style="margin-top:1.8rem;">
+        <div class="dif-item">
+          <div class="dif-check">✓</div>
+          <p><strong>Relatório Final de Gestão</strong> gerado automaticamente com todos os indicadores do mandato.</p>
+        </div>
+        <div class="dif-item">
+          <div class="dif-check">✓</div>
+          <p><strong>Pacote de Dados Pessoais</strong> em PDF para cada servidor — agenda, mensagens e histórico individual.</p>
+        </div>
+        <div class="dif-item">
+          <div class="dif-check">✓</div>
+          <p><strong>Selamento reversível</strong> dos dados pessoais com travamento de acesso de quem encerra o vínculo.</p>
+        </div>
+      </div>
+    </div>
+    <div class="transicao-visual">
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ciano);margin-bottom:1.5rem;">Linha do tempo</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot ativo">✓</div>
+          <div class="tl-content">
+            <h4>Gestão ativa</h4>
+            <p>Sistema operando normalmente. Demandas, documentos e agenda em fluxo.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot alerta">!</div>
+          <div class="tl-content">
+            <h4>Alerta 90 dias antes</h4>
+            <p>GovFlow detecta data de fim de mandato e notifica o Admin para iniciar protocolo.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot neutro">→</div>
+          <div class="tl-content">
+            <h4>Protocolo de transição</h4>
+            <p>Relatório Final, pacotes pessoais gerados, dados selados. Nova gestão ou reeleição.</p>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot ativo">✓</div>
+          <div class="tl-content">
+            <h4>Nova gestão ativa</h4>
+            <p>Histórico institucional preservado. Novos gestores onboardam em 2 horas.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PREÇOS -->
+<section class="precos" id="precos">
+  <div class="precos-header">
+    <div class="section-label">Investimento</div>
+    <h2 class="section-title">Preço justo para cada porte de município.</h2>
+    <p class="section-sub">Faixas calibradas pelo coeficiente FPM — quanto menor o município, menor o investimento.</p>
+    <div class="teto-badge">✓ Todos os planos abaixo do teto de dispensa — R$65.492,11/ano</div>
+  </div>
+  <div class="faixas-grid">
+    <div class="faixa-card">
+      <div class="faixa-label">Faixa 1</div>
+      <div class="faixa-fpm">FPM 0,6</div>
+      <div class="faixa-preco">R$1.300<span>/mês</span></div>
+      <div class="faixa-impl">Implantação <strong>R$1.800</strong></div>
+    </div>
+    <div class="faixa-card">
+      <div class="faixa-label">Faixa 2</div>
+      <div class="faixa-fpm">FPM 0,8 – 1,0</div>
+      <div class="faixa-preco">R$1.900<span>/mês</span></div>
+      <div class="faixa-impl">Implantação <strong>R$2.400</strong></div>
+    </div>
+    <div class="faixa-card destaque">
+      <div class="faixa-label">Faixa 3</div>
+      <div class="faixa-fpm">FPM 1,2 – 1,8</div>
+      <div class="faixa-preco">R$2.700<span>/mês</span></div>
+      <div class="faixa-impl">Implantação <strong>R$3.000</strong></div>
+    </div>
+    <div class="faixa-card">
+      <div class="faixa-label">Faixa 4</div>
+      <div class="faixa-fpm">FPM 2,0 – 3,0</div>
+      <div class="faixa-preco">R$3.500<span>/mês</span></div>
+      <div class="faixa-impl">Implantação <strong>R$3.500</strong></div>
+    </div>
+    <div class="faixa-card">
+      <div class="faixa-label">Faixa 5</div>
+      <div class="faixa-fpm">FPM 3,4 – 4,0</div>
+      <div class="faixa-preco">R$4.200<span>/mês</span></div>
+      <div class="faixa-impl">Implantação <strong>R$4.000</strong></div>
+    </div>
+  </div>
+  <p class="precos-nota">Usuários ilimitados incluídos em todos os planos · Suporte incluso · Treinamento incluso<br>Contratação por dispensa de licitação (Art. 75, II, Lei 14.133/2021)</p>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final" id="contato">
+  <h2>Sua prefeitura pode<br>começar esta semana.</h2>
+  <p>Agende uma demonstração gratuita. Em 30 minutos você vê o sistema funcionando com os dados reais do seu município.</p>
+  <div class="cta-buttons">
+    <a href="https://wa.me/5586999999999?text=Ol%C3%A1%2C%20gostaria%20de%20conhecer%20o%20GovFlow" class="btn-whatsapp" target="_blank">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Falar pelo WhatsApp
+    </a>
+    <a href="mailto:contato@govflow.tec.br" class="btn-secondary" style="display:flex;align-items:center;gap:.5rem;">
+      ✉ contato@govflow.tec.br
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Gov<span>Flow</span></div>
+  <div class="footer-text">govflow.tec.br · Governança municipal digital</div>
+  <div class="footer-by">Desenvolvido por <strong>INOVEX Consult</strong></div>
+</footer>
+
+</body>
+</html>
