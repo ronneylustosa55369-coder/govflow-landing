@@ -1,0 +1,17 @@
+{
+  "name": "govflow-landing",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:html": "playwright test tests/html.spec.js",
+    "test:e2e": "playwright test tests/e2e.spec.js",
+    "test:a11y": "playwright test tests/accessibility.spec.js"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.0",
+    "@playwright/test": "^1.50.0",
+    "html-validate": "^9.0.0",
+    "http-server": "^14.1.1"
+  }
+}
